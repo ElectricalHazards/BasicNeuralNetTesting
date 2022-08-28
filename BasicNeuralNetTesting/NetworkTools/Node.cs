@@ -6,5 +6,8 @@ using System.Threading.Tasks;
 
 namespace NNetTesting.NetworkTools {
     internal class Node {
+        internal static float[,] activate(float[,] biasedWeightedInputs) {
+            throw new NotImplementedException();
+        }
     }
 }
