@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>NNetTesting</RootNamespace>
+    <PackageId>NNetTesting</PackageId>
   </PropertyGroup>
 
 </Project>
