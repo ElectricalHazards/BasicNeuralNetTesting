@@ -24,15 +24,10 @@ namespace NNetTesting.NetworkTools {
         }
         private double cost(double[,] input, double[,] expectedInput) {
             double totalError = 0;
-            double sumIn = 0;
-            foreach(double d in input) {
-                sumIn += d;
-            }
-            double sumExp = 0;
-            foreach(double d in expectedInput) {
-                sumExp += d;
-            }
-            totalError = sumIn - sumExp;
+            double[,] difference = MatrixMath.subtract(expectedInput, input);
+            totalError += difference[1, 0];
+            totalError -= difference[0, 0];
+
             return Math.Pow(totalError,2);
         }
         public void Learn(SimpleDataset _dataset, double learnRate) {
@@ -54,8 +49,8 @@ namespace NNetTesting.NetworkTools {
                         newCost /= dataset.Count;
                         layer.weights[i, j] -= h;
                         double deltaCost = (newCost-oldCost)/h;
-                        layer.weights[i, j] += deltaCost * learnRate;   
-                        Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost*learnRate);
+                        layer.weights[i, j] -= deltaCost * learnRate;   
+                        Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost);
                     }
                 }
                 for (int i = 0; i < layer.biases.GetLength(0); i++) {
@@ -73,8 +68,8 @@ namespace NNetTesting.NetworkTools {
                         newCost /= dataset.Count;
                         layer.biases[i, j] -= h;
                         double deltaCost = (newCost-oldCost)/h;
-                        layer.biases[i, j] += deltaCost * learnRate;
-                        Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost*learnRate);
+                        layer.biases[i, j] -= deltaCost * learnRate;
+                        Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost);
                     }
                 }
             }

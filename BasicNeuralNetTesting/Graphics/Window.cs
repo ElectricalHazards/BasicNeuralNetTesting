@@ -54,7 +54,7 @@ namespace NNetTesting.Graphics {
             foreach (DataPoint d in data) {
                 spriteBatch.Draw(tex, new Rectangle((int)(d.pos.X*scaling.X), (int)(d.pos.Y*scaling.Y), 5,5), new Color(d.label.X, d.label.Y, 0));
             }
-            network.Learn(dataset, 1f);
+            network.Learn(dataset, .5f);
             spriteBatch.End();
             base.Draw(gameTime);
         }
