@@ -9,18 +9,18 @@ namespace NNetTesting.DatasetTools {
     internal class SimpleDataset {
 
         private readonly Vector2 maxLocals = new Vector2(10, 10);
-        private readonly Func<float, float> curve = (n1) => (2.03f * MathF.Pow((n1 - 2.9f), 2) + 3.6f) * 0.5f * MathF.Sin(0.6f * n1);
+        private readonly Func<double, double> curve = (n1) => Math.Pow(n1, 2) * (1 - (0.122 * n1));//(2.03f * Math.Pow((n1 - 2.9f), 2) + 3.6f) * 0.5f * Math.Sin(0.6f * n1);
 
-        private List<DataPoint> dataPoints = new List<DataPoint>();
+        public List<DataPoint> dataPoints { get; private set; } = new List<DataPoint>();
         public List<DataPoint> trainingData { get; private set; } = new List<DataPoint>();
         public List<DataPoint> testingData { get; private set; } = new List<DataPoint>();
         private Random rand = new Random();
-        public SimpleDataset(int setSize = 100, float trainTestPrecent = .8f) {
+        public SimpleDataset(int setSize = 100, double trainTestPrecent = .8f) {
             createDataset(setSize);
             splitData(trainTestPrecent);
         }
 
-        private void splitData(float split) {
+        private void splitData(double split) {
             int splitPoint = (int)(dataPoints.Count * split);
             for(int i = 0; i < dataPoints.Count; i++) {
                 if (i < splitPoint) {

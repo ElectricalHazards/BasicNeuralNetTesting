@@ -15,7 +15,7 @@ namespace NNetTesting.DatasetTools {
             processedEquations = parse(processedEquation);
         }
 
-        public float calculate(float f) {
+        public double calculate(double f) {
             List<String> replacedOperations = replace(f, processedEquations);
             List<String> compressedEquations = compress(replacedOperations);
             return multiVarCompress(compressedEquations);
@@ -45,7 +45,7 @@ namespace NNetTesting.DatasetTools {
             substrings.Add(equation);
             return substrings;
         }
-        private List<String> replace(float x,List<String> equaitons) {
+        private List<String> replace(double x,List<String> equaitons) {
             List<String> replacedEquations = equaitons.ToArray().ToList();
             for (int i = 0; i < replacedEquations.Count(); i++) {
                 replacedEquations[i] = replacedEquations[i].Replace("x", x.ToString());
@@ -69,12 +69,12 @@ namespace NNetTesting.DatasetTools {
                             if (segments[i].Contains(operand) && !segments[i].Contains("@")) {
                                 if (operand.Equals("sin")) {
                                     
-                                    float n = float.Parse(segments[i].Substring(0, segments[i].IndexOf(operand)+3));
-                                    segments[i] = MathF.Sin(n).ToString();
+                                    double n = double.Parse(segments[i].Substring(0, segments[i].IndexOf(operand)+3));
+                                    segments[i] = Math.Sin(n).ToString();
                                     continue;
                                 }
-                                float n1 = float.Parse(segments[i].Substring(0, segments[i].IndexOf(operand)));
-                                float n2 = float.Parse(segments[i].Substring(segments[i].IndexOf(operand) + 1));
+                                double n1 = double.Parse(segments[i].Substring(0, segments[i].IndexOf(operand)));
+                                double n2 = double.Parse(segments[i].Substring(segments[i].IndexOf(operand) + 1));
                                 if (operand == "+") {
                                     segments[i] = (n1 + n2).ToString();
                                 } else if (operand == "-") {
@@ -82,7 +82,7 @@ namespace NNetTesting.DatasetTools {
                                 } else if (operand == "*") {
                                     segments[i] = (n1 * n2).ToString();
                                 } else if (operand == "^") {
-                                    segments[i] = MathF.Pow(n1, n2).ToString();
+                                    segments[i] = Math.Pow(n1, n2).ToString();
                                 }
                             }
                         }
@@ -132,8 +132,8 @@ namespace NNetTesting.DatasetTools {
 
             return segments;
         }
-        public float multiVarCompress(List<String> compressedEquations) {
-            float result = 0;
+        public double multiVarCompress(List<String> compressedEquations) {
+            double result = 0;
             String[] mathmaticalOperaitons = { "+", "-", "*", "/", "^", "sin" };
             for (int i = 0; i < compressedEquations.Count; i++) {
                 String s = compressedEquations[i];
@@ -153,8 +153,8 @@ namespace NNetTesting.DatasetTools {
                 }
                 operands.Sort();
                 for (int k = 0; k < operands.Count - 1; k++) {
-                    float n1 = float.Parse(s.Substring(0, operands[k]));
-                    float n2 = float.Parse(s.Substring(operands[k] + 1, operands[k + 1] - operands[k] - 1));
+                    double n1 = double.Parse(s.Substring(0, operands[k]));
+                    double n2 = double.Parse(s.Substring(operands[k] + 1, operands[k + 1] - operands[k] - 1));
                     String operand = s.Substring(operands[k], 1);
                     if (operand == "+") {
                         s = s.Replace(s.Substring(0, operands[k + 1] - operands[k] - 1), (n1 + n2).ToString());
@@ -163,7 +163,7 @@ namespace NNetTesting.DatasetTools {
                     } else if (operand == "*") {
                         s = s.Replace(s.Substring(0, operands[k + 1] - operands[k] - 1), (n1 * n2).ToString());
                     } else if (operand == "^") {
-                        s = s.Replace(s.Substring(0, operands[k + 1] - operands[k] - 1), MathF.Pow(n1, n2).ToString());
+                        s = s.Replace(s.Substring(0, operands[k + 1] - operands[k] - 1), Math.Pow(n1, n2).ToString());
                     }
                 }
                 compressedEquations[i] = s;
@@ -180,8 +180,8 @@ namespace NNetTesting.DatasetTools {
                     //Console.WriteLine(segments[i]);
                     foreach (String operand in mathmaticalOperaitons) {
                         if (s.Contains(operand) && !s.Contains("@")) {
-                            float n1 = float.Parse(s.Substring(0, s.IndexOf(operand)));
-                            float n2 = float.Parse(s.Substring(s.IndexOf(operand) + 1));
+                            double n1 = double.Parse(s.Substring(0, s.IndexOf(operand)));
+                            double n2 = double.Parse(s.Substring(s.IndexOf(operand) + 1));
                             if (operand == "+") {
                                 s = (n1 + n2).ToString();
                             } else if (operand == "-") {
@@ -189,7 +189,7 @@ namespace NNetTesting.DatasetTools {
                             } else if (operand == "*") {
                                 s = (n1 * n2).ToString();
                             } else if (operand == "^") {
-                                s = MathF.Pow(n1, n2).ToString();
+                                s = Math.Pow(n1, n2).ToString();
                             }
                         }
                     }
