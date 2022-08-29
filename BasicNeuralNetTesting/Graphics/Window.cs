@@ -16,6 +16,7 @@ namespace NNetTesting.Graphics {
         List<DataPoint> data;
         SimpleDataset dataset;
         Network network;
+        float itterationAccuracy = 0f;
         public Window(SimpleDataset dataset, Network network) {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -46,15 +47,18 @@ namespace NNetTesting.Graphics {
                 for(int y = 0; y < viewportSize.Y; y++) {
                     Vector2 scaledPosition= new Vector2(x/scaling.X, y/scaling.Y);
                     double[,] result = network.eval(new double[,] { {scaledPosition.X}, {scaledPosition.Y} });
-                    Color col = new Color((result[0, 0] < result[1, 0]? 1 : 0.5f), (result[0, 0] > result[1, 0] ? 1 : 0.5f),0.5f);
+                    Color col = new Color((float)Math.Clamp(result[0,0],0,0.8)/*(result[0, 0] > result[1, 0]? 1 : 0.5f)*/, (float)Math.Clamp(result[1,0],0,0.8)/*(result[0, 0] < result[1, 0] ? 1 : 0.5f)*/,0f);
                     spriteBatch.Draw(tex, new Rectangle(x, y, 1, 1), col);
                 }
             }
             double cost = 0;
             foreach (DataPoint d in data) {
-                spriteBatch.Draw(tex, new Rectangle((int)(d.pos.X*scaling.X), (int)(d.pos.Y*scaling.Y), 5,5), new Color(d.label.X, d.label.Y, 0));
+                spriteBatch.Draw(tex, new Rectangle((int)(d.pos.X*scaling.X), (int)(d.pos.Y*scaling.Y), 5,5), new Color(d.label.X, d.label.Y, (dataset.testingData.Contains(d)?1:0)));
             }
-            network.Learn(dataset, .5f);
+            network.Learn(dataset, .5f-itterationAccuracy);
+            if (0.5f - (itterationAccuracy + .000125) > .25) {
+                itterationAccuracy += 0.000125f;
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }

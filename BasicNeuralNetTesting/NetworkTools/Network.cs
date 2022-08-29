@@ -33,54 +33,68 @@ namespace NNetTesting.NetworkTools {
         public void Learn(SimpleDataset _dataset, double learnRate) {
             List<DataPoint> dataset = _dataset.trainingData;
             double h = 0.001f;
-            foreach (Layer layer in layers) {
-                for (int i = 0; i < layer.weights.GetLength(0); i++) {
-                    for (int j = 0; j < layer.weights.GetLength(1); j++) {
-                        double oldCost = 0;
-                        foreach (DataPoint point in dataset) {
-                            oldCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
-                        }
-                        oldCost /= dataset.Count;
-                        layer.weights[i, j] += h;
-                        double newCost = 0;
-                        foreach (DataPoint point in dataset) {
-                            newCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
-                        }
-                        newCost /= dataset.Count;
-                        layer.weights[i, j] -= h;
-                        double deltaCost = (newCost-oldCost)/h;
-                        layer.weights[i, j] -= deltaCost * learnRate;   
-                        Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost);
-                    }
+            double itterationCost = 0;
+            int _batchSize = 50;
+            int totalBatches = (int)(((double)dataset.Count / _batchSize) + .5);
+            List<List<DataPoint>> batches = new List<List<DataPoint>>();
+            for(int i = 0; i<totalBatches; i++){
+                List<DataPoint> batch = new List<DataPoint>();
+                for(int k = 0; k < _batchSize; k++) {
+                    batch.Add(dataset[k]);
                 }
-                for (int i = 0; i < layer.biases.GetLength(0); i++) {
-                    for (int j = 0; j < layer.biases.GetLength(1); j++) {
-                        double oldCost = 0;
-                        foreach (DataPoint point in dataset) {
-                            oldCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
+                batches.Add(batch);
+            }
+            foreach (List<DataPoint> batch in batches) {
+                foreach (Layer layer in layers) {
+                    for (int i = 0; i < layer.weights.GetLength(0); i++) {
+                        for (int j = 0; j < layer.weights.GetLength(1); j++) {
+                            double oldCost = 0;
+                            foreach (DataPoint point in batch) {
+                                oldCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
+                            }
+                            oldCost /= batch.Count;
+                            layer.weights[i, j] += h;
+                            double newCost = 0;
+                            foreach (DataPoint point in batch) {
+                                newCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
+                            }
+                            newCost /= batch.Count;
+                            layer.weights[i, j] -= h;
+                            double deltaCost = (newCost - oldCost) / h;
+                            layer.weights[i, j] -= deltaCost * learnRate;
+                            // Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost * learnRate);
                         }
-                        oldCost /= dataset.Count;
-                        layer.biases[i, j] += h;
-                        double newCost = 0;
-                        foreach (DataPoint point in dataset) {
-                            newCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
+                    }
+                    for (int i = 0; i < layer.biases.GetLength(0); i++) {
+                        for (int j = 0; j < layer.biases.GetLength(1); j++) {
+                            double oldCost = 0;
+                            foreach (DataPoint point in batch) {
+                                oldCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
+                            }
+                            oldCost /= batch.Count;
+                            layer.biases[i, j] += h;
+                            double newCost = 0;
+                            foreach (DataPoint point in batch) {
+                                newCost += cost(eval(new double[,] { { point.pos.X }, { point.pos.Y } }), new double[,] { { point.label.X }, { point.label.Y } });
+                            }
+                            newCost /= batch.Count;
+                            layer.biases[i, j] -= h;
+                            double deltaCost = (newCost - oldCost) / h;
+                            itterationCost = (newCost > oldCost ? newCost : oldCost);
+                            layer.biases[i, j] -= deltaCost * learnRate;
+                            // Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost * learnRate);
                         }
-                        newCost /= dataset.Count;
-                        layer.biases[i, j] -= h;
-                        double deltaCost = (newCost-oldCost)/h;
-                        layer.biases[i, j] -= deltaCost * learnRate;
-                        Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost);
                     }
                 }
             }
-            Console.WriteLine("Itteration done, test accuracy: "+Test(_dataset)+"/"+_dataset.testingData.Count+" Training accuracy: "+trainAccuracy(_dataset)+"/" + _dataset.trainingData.Count);
+            Console.WriteLine("Itteration done, test accuracy: "+Test(_dataset)+"/"+_dataset.testingData.Count+" Training accuracy: "+trainAccuracy(_dataset)+"/" + _dataset.trainingData.Count+". Learn rate: "+learnRate+". Cost: "+itterationCost);
             
         }
         public int Test(SimpleDataset dataset) {
             int accuracy = 0;
             foreach(DataPoint point in dataset.testingData) {
                 double[,] guess = eval(new double[,] { { point.pos.X }, { point.pos.Y } });
-                bool guessEval = guess[1, 0] > guess[0, 0];
+                bool guessEval = guess[1, 0] < guess[0, 0];
                 bool labelEval = point.label.X > point.label.Y;
                 if (guessEval == labelEval) {
                     accuracy++;
