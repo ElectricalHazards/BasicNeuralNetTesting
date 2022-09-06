@@ -9,7 +9,7 @@ namespace NNetTesting.DatasetTools {
     internal class SimpleDataset {
 
         private readonly Vector2 maxLocals = new Vector2(10, 10);
-        private readonly Func<double, double> curve = (n1) => Math.Pow(n1, 2) * (1 - (0.122 * n1));//(2.03f * Math.Pow((n1 - 2.9f), 2) + 3.6f) * 0.5f * Math.Sin(0.6f * n1);
+        private readonly Func<double, double> curve = (n1) => /*Math.Abs(10 * Math.Sin(n1/2));*/Math.Pow(n1, 2) * (1 - (0.122 * n1));//(2.03f * Math.Pow((n1 - 2.9f), 2) + 3.6f) * 0.5f * Math.Sin(0.6f * n1);
 
         public List<DataPoint> dataPoints { get; private set; } = new List<DataPoint>();
         public List<DataPoint> trainingData { get; private set; } = new List<DataPoint>();

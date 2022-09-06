@@ -55,7 +55,7 @@ namespace NNetTesting.Graphics {
             foreach (DataPoint d in data) {
                 spriteBatch.Draw(tex, new Rectangle((int)(d.pos.X*scaling.X), (int)(d.pos.Y*scaling.Y), 5,5), new Color(d.label.X, d.label.Y, (dataset.testingData.Contains(d)?1:0)));
             }
-            network.Learn(dataset, .5f-itterationAccuracy);
+            network.Learn(dataset, .75f-itterationAccuracy);
             if (0.5f - (itterationAccuracy + .000125) > .25) {
                 itterationAccuracy += 0.000125f;
             }

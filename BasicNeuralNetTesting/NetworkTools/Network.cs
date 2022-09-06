@@ -34,7 +34,7 @@ namespace NNetTesting.NetworkTools {
             List<DataPoint> dataset = _dataset.trainingData;
             double h = 0.001f;
             double itterationCost = 0;
-            int _batchSize = 50;
+            int _batchSize = 25;
             int totalBatches = (int)(((double)dataset.Count / _batchSize) + .5);
             List<List<DataPoint>> batches = new List<List<DataPoint>>();
             for(int i = 0; i<totalBatches; i++){
@@ -62,7 +62,6 @@ namespace NNetTesting.NetworkTools {
                             layer.weights[i, j] -= h;
                             double deltaCost = (newCost - oldCost) / h;
                             layer.weights[i, j] -= deltaCost * learnRate;
-                            // Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost * learnRate);
                         }
                     }
                     for (int i = 0; i < layer.biases.GetLength(0); i++) {
@@ -82,15 +81,14 @@ namespace NNetTesting.NetworkTools {
                             double deltaCost = (newCost - oldCost) / h;
                             itterationCost = (newCost > oldCost ? newCost : oldCost);
                             layer.biases[i, j] -= deltaCost * learnRate;
-                            // Console.WriteLine(oldCost + " : " + newCost + " : " + deltaCost * learnRate);
                         }
                     }
                 }
             }
-            Console.WriteLine("Itteration done, test accuracy: "+Test(_dataset)+"/"+_dataset.testingData.Count+" Training accuracy: "+trainAccuracy(_dataset)+"/" + _dataset.trainingData.Count+". Learn rate: "+learnRate+". Cost: "+itterationCost);
+            Console.WriteLine("Itteration done, test accuracy: "+TestAccuracy(_dataset)+"/"+_dataset.testingData.Count+" Training accuracy: "+trainAccuracy(_dataset)+"/" + _dataset.trainingData.Count+". Learn rate: "+learnRate+". Cost: "+itterationCost);
             
         }
-        public int Test(SimpleDataset dataset) {
+        private int TestAccuracy(SimpleDataset dataset) {
             int accuracy = 0;
             foreach(DataPoint point in dataset.testingData) {
                 double[,] guess = eval(new double[,] { { point.pos.X }, { point.pos.Y } });
@@ -102,7 +100,7 @@ namespace NNetTesting.NetworkTools {
             }
             return accuracy;
         }
-        public int trainAccuracy(SimpleDataset dataset) {
+        private int trainAccuracy(SimpleDataset dataset) {
             int accuracy = 0;
             foreach (DataPoint point in dataset.trainingData) {
                 double[,] guess = eval(new double[,] { { point.pos.X }, { point.pos.Y } });

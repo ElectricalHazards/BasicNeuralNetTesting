@@ -6,7 +6,7 @@ namespace NNetTesting {
     public class Program {
         static readonly double TRAINING_TEST_PRECENTAGE = .8f;
         static readonly int DATASET_SIZE = 500;
-        static readonly int[] NETWORK_SIZE = { 2, 4, 2 };
+        static readonly int[] NETWORK_SIZE = { 2, 3, 2 };
         
         public static void Main(string[] args) {
 

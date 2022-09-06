@@ -17,7 +17,7 @@ namespace NNetTesting.NetworkTools {
         }
 
         private static double activation(double v) {
-            return (1 / (1+Math.Exp(-1*v)));
+            return (1 / (1+Math.Exp(-1*v)))-.5;
         }
     }
 }
